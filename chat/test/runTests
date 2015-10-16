@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# -*- encoding: UTF-8 -*-
+__author__ = 'yac'
+
+import os
+import sys
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(APP_DIR, '../..'))
+
+from multiprocessing import Process
+from django.core.wsgi import get_wsgi_application
+from socketio.server import SocketIOServer
+from config import PORT, LOG_PATH
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "chat.settings")
+app = get_wsgi_application()
+
+
+
+def main():
+    """ Run python test file """
+    for item in os.listdir(APP_DIR):
+        if not item.startswith('test_') and not item.endswith('.py'):
+            continue
+
+        ret = os.system('python %s' % os.path.join(APP_DIR, item))
+        if ret:
+            print('[ERROR] Tests failed!')
+
+class WebServer(Process):
+    """ Implement web server """
+
+    def run(self):
+        """ Start server """
+
+        SocketIOServer(('', PORT), app, resource="socket.io", log_file=LOG_PATH).serve_forever()
+
+    def shutdown_server(self):
+        """ Shutdown server """
+        self.terminate()
+        self.join()
+        print 'Server shutting down... OK'
+
+if __name__ == '__main__':
+
+    server = WebServer()
+    server.start()
+
+    main()
+
+    server.shutdown_server()
