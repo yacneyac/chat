@@ -1,7 +1,11 @@
-# Simple broadcast chat:
- 1. Authorized user can chatting, other user can only read chat.
- 2. Sharing image files.
+Simple broadcast chat
+---------------------
 
-python2.7
-django1.7
-gevent-socketio
+- Authorized user can chatting, other user can only read chat.
+- Sharing image files.
+
+libraries
+---------
+- python2.7
+- django1.7
+- gevent-socketio
